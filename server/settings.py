@@ -44,8 +44,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Ensure this matches your frontend URL
 ]
 
-
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -56,6 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'corsheaders.middleware.CorsMiddleware', 
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "server.urls"
