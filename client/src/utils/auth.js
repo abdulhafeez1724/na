@@ -1,58 +1,43 @@
-import Cookies from "js-cookie";
+import axios from 'axios';
 
-// Login function to get JWT tokens and store them in cookies
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+// Login function
 export const login = async (username, password) => {
-  const response = await fetch("http://127.0.0.1:8000/api/token/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
+  try {
+    const response = await axios.post(`${API_BASE_URL}/token/`, { username, password });
+    const { access, refresh } = response.data;
 
-  if (response.ok) {
-    const data = await response.json();
-    // Store access and refresh tokens in cookies securely
-    Cookies.set("access_token", data.access, { expires: 1, secure: true });
-    Cookies.set("refresh_token", data.refresh, { expires: 7, secure: true });
-    return data;
-  } else {
-    throw new Error("Login failed");
+    // Save tokens in localStorage
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
+
+    return true; // Login success
+  } catch (error) {
+    console.error('Login failed:', error);
+    return false; // Login failed
   }
 };
 
-// Function to refresh the access token using the refresh token
-export const refreshAccessToken = async () => {
-  const refreshToken = Cookies.get("refresh_token");
-
-  if (!refreshToken) {
-    throw new Error("No refresh token found");
-  }
-
-  const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ refresh: refreshToken }),
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    Cookies.set("access_token", data.access, { expires: 1, secure: true });
-    return data.access;
-  } else {
-    throw new Error("Failed to refresh token");
-  }
-};
-
-// Check if the user is authenticated by checking for the presence of the access token
-export const isAuthenticated = () => {
-  return !!Cookies.get("access_token");
-};
-
-// Logout function to remove the tokens from cookies
+// Logout function
 export const logout = () => {
-  Cookies.remove("access_token");
-  Cookies.remove("refresh_token");
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+};
+
+// Get new access token using refresh token
+export const refreshAccessToken = async () => {
+  try {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) throw new Error('No refresh token found');
+
+    const response = await axios.post(`${API_BASE_URL}/token/refresh/`, { refresh: refreshToken });
+    const { access } = response.data;
+
+    localStorage.setItem('accessToken', access);
+    return access;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    logout();
+  }
 };
