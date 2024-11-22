@@ -1,7 +1,7 @@
-// src/app/login/page.js
-"use client"; // Ensures the component is client-side
+"use client";
 
 import { useState } from "react";
+import { login } from "@/utils/auth";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -11,20 +11,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://127.0.0.1:8000/api/token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
-      window.location.href = "/"; 
-    } else {
+    try {
+      await login(username, password);
+      window.location.href = "/";
+    } catch (err) {
       setError("Invalid username or password");
     }
   };
@@ -47,7 +37,7 @@ export default function Login() {
         />
         <button type="submit">Login</button>
       </form>
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
