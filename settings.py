@@ -33,16 +33,12 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Use JWTAuthentication
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Ensure authentication is required
-    ],
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Ensure this matches your frontend URL
-]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,7 +50,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'corsheaders.middleware.CorsMiddleware', 
 ]
-
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "server.urls"
