@@ -5,10 +5,8 @@ client/.next/
 *.env
 
 # Ignore Python compiled files
-__pycache__/
-*.pyc
+**/__pycache__/
+**/*.pyc
 
 # Ignore SQLite database (if not + in repo)
 server/db.sqlite3
-#@@
-server/server/__pycache__/settings.cpython-312.pyc
