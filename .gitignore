@@ -10,6 +10,3 @@ client/.next/
 
 # Ignore SQLite database (if not + in repo)
 server/db.sqlite3
-client/.next/cache
-client/.next/static
-client/.next/server
