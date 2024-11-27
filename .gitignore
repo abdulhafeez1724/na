@@ -8,6 +8,6 @@ client/.next/
 __pycache__/
 *.pyc
 
-# Ignore SQLite database (if not needed in repo)
+# Ignore SQLite database (if not + in repo)
 server/db.sqlite3
 #@@
