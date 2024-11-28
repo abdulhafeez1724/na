@@ -2,27 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '@/utils/auth';
+import { login as performLogin } from '@/utils/auth';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
-  // Check if the user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      router.push('/'); // Redirect to the dashboard if authenticated
+      router.push('/');
     }
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(username, password);
+    const success = await performLogin(username, password);
     if (success) {
-      router.push('/'); // Redirect to the dashboard after successful login
+      login(); // Update authentication context
+      router.push('/');
     } else {
       setError('Invalid username or password');
     }
